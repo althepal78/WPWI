@@ -8,8 +8,8 @@ namespace DAL.DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options): base(options){}
 
-        DbSet<Wedding>  Weddings { get; set; }
-        DbSet<RSVP> RSVPs { get; set; }  
+        public DbSet<Wedding>  Weddings { get; set; }
+        public DbSet<RSVP> RSVPs { get; set; }  
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
