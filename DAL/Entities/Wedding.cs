@@ -4,6 +4,9 @@ namespace DAL.Entities
 {
     public class Wedding
     {
+        [Key]
+        public Guid WeddingId { get; set; }
+
         [Required, Display(Name = "Wedding Date: ")]
         public DateTime WeddingDate { get; set; }
 
