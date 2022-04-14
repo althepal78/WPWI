@@ -1,0 +1,20 @@
+﻿@model WPWI.Models.ViewModels.LoginVM
+
+<section>
+    <div class="login-container">
+        <form class="form" method="post" asp-action="Login" asp-controller="Accounts">
+            <div asp-validation-summary="All"></div>
+            <div class="form-control">
+                <label asp-for="@Model.Email"></label>
+                <input asp-for="@Model.Email" />
+            </div>
+            <div class="form-control">
+                <label asp-for="@Model.Password"></label>
+                <input asp-for="@Model.Password" />
+            </div>
+            <div class="form-control">
+                <button type="submit" class="btn btn-outline-primary">Submit</button>
+            </div>
+        </form>
+    </div>
+</section>

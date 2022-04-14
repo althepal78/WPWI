@@ -14,6 +14,31 @@ namespace DAL.DbContext
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<AppUser>(u =>
+            {
+                u.Property(user => user.PhoneNumber)
+            .IsUnicode(false)
+            .IsFixedLength(false)
+            .HasMaxLength(15);
+
+                u.Property(user => user.PasswordHash)
+                    .IsUnicode(false)
+                    .IsFixedLength(true)
+                    .HasMaxLength(84);
+
+                u.Property(user => user.ConcurrencyStamp)
+                    .IsUnicode(false)
+                    .IsFixedLength(true)
+                    .HasMaxLength(36)
+                    .IsRequired(true);
+
+                u.Property(user => user.SecurityStamp)
+                    .IsUnicode(false)
+                    .IsFixedLength(false)
+                    .HasMaxLength(36)
+                    .IsRequired(true);
+            });
         }
     }
 }

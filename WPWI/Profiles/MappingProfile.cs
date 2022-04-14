@@ -9,6 +9,7 @@ namespace WPWI.Profiles
         public MappingProfile()
         {
             CreateMap<Wedding, WeddingVM>().ReverseMap();
+            CreateMap<AppUser, AppUserVM>().ReverseMap();
         }
     }
 }

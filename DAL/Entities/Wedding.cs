@@ -23,6 +23,7 @@ namespace DAL.Entities
                 return $"Welcome to {WedderOne} and {WedderTwo}'s Wedding";
             }
         }
+        public List<RSVP> RSVPs { get; set; }
 
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedOn { get; set; } = DateTime.UtcNow;

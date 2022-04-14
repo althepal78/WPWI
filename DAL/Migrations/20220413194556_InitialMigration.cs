@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class initial : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -36,10 +36,10 @@ namespace DAL.Migrations
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordHash = table.Column<string>(type: "char(84)", unicode: false, fixedLength: true, maxLength: 84, nullable: true),
+                    SecurityStamp = table.Column<string>(type: "varchar(36)", unicode: false, maxLength: 36, nullable: false),
+                    ConcurrencyStamp = table.Column<string>(type: "char(36)", unicode: false, fixedLength: true, maxLength: 36, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "varchar(15)", unicode: false, maxLength: 15, nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -49,17 +49,6 @@ namespace DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RSVPs",
-                columns: table => new
-                {
-                    RSVPId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RSVPs", x => x.RSVPId);
                 });
 
             migrationBuilder.CreateTable(
@@ -169,30 +158,6 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppUserRSVP",
-                columns: table => new
-                {
-                    GuestsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RSVPsRSVPId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUserRSVP", x => new { x.GuestsId, x.RSVPsRSVPId });
-                    table.ForeignKey(
-                        name: "FK_AppUserRSVP_AspNetUsers_GuestsId",
-                        column: x => x.GuestsId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AppUserRSVP_RSVPs_RSVPsRSVPId",
-                        column: x => x.RSVPsRSVPId,
-                        principalTable: "RSVPs",
-                        principalColumn: "RSVPId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Weddings",
                 columns: table => new
                 {
@@ -202,8 +167,7 @@ namespace DAL.Migrations
                     WedderTwo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RSVPId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -213,17 +177,30 @@ namespace DAL.Migrations
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Weddings_RSVPs_RSVPId",
-                        column: x => x.RSVPId,
-                        principalTable: "RSVPs",
-                        principalColumn: "RSVPId");
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_AppUserRSVP_RSVPsRSVPId",
-                table: "AppUserRSVP",
-                column: "RSVPsRSVPId");
+            migrationBuilder.CreateTable(
+                name: "RSVPs",
+                columns: table => new
+                {
+                    RSVPId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    WeddingId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RSVPs", x => x.RSVPId);
+                    table.ForeignKey(
+                        name: "FK_RSVPs_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RSVPs_Weddings_WeddingId",
+                        column: x => x.WeddingId,
+                        principalTable: "Weddings",
+                        principalColumn: "WeddingId");
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -265,21 +242,23 @@ namespace DAL.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Weddings_AppUserId",
-                table: "Weddings",
+                name: "IX_RSVPs_AppUserId",
+                table: "RSVPs",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Weddings_RSVPId",
+                name: "IX_RSVPs_WeddingId",
+                table: "RSVPs",
+                column: "WeddingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Weddings_AppUserId",
                 table: "Weddings",
-                column: "RSVPId");
+                column: "AppUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AppUserRSVP");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -296,16 +275,16 @@ namespace DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Weddings");
+                name: "RSVPs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Weddings");
 
             migrationBuilder.DropTable(
-                name: "RSVPs");
+                name: "AspNetUsers");
         }
     }
 }

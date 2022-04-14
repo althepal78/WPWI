@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220413184826_initial")]
-    partial class initial
+    [Migration("20220414161810_AddedRegisterinAccountsController")]
+    partial class AddedRegisterinAccountsController
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,28 +24,23 @@ namespace DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("AppUserRSVP", b =>
-                {
-                    b.Property<string>("GuestsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<Guid>("RSVPsRSVPId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("GuestsId", "RSVPsRSVPId");
-
-                    b.HasIndex("RSVPsRSVPId");
-
-                    b.ToTable("AppUserRSVP");
-                });
-
             modelBuilder.Entity("DAL.Entities.RSVP", b =>
                 {
                     b.Property<Guid>("RSVPId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid?>("WeddingId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("RSVPId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("WeddingId");
 
                     b.ToTable("RSVPs");
                 });
@@ -61,9 +56,6 @@ namespace DAL.Migrations
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("RSVPId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
@@ -84,8 +76,6 @@ namespace DAL.Migrations
                     b.HasKey("WeddingId");
 
                     b.HasIndex("AppUserId");
-
-                    b.HasIndex("RSVPId");
 
                     b.ToTable("Weddings");
                 });
@@ -152,7 +142,11 @@ namespace DAL.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .IsUnicode(false)
+                        .HasColumnType("char(36)")
+                        .IsFixedLength();
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
@@ -180,16 +174,26 @@ namespace DAL.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(84)
+                        .IsUnicode(false)
+                        .HasColumnType("char(84)")
+                        .IsFixedLength();
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(15)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(15)")
+                        .IsFixedLength(false);
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(36)
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(36)")
+                        .IsFixedLength(false);
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -300,28 +304,26 @@ namespace DAL.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasDiscriminator().HasValue("AppUser");
                 });
 
-            modelBuilder.Entity("AppUserRSVP", b =>
+            modelBuilder.Entity("DAL.Entities.RSVP", b =>
                 {
                     b.HasOne("DAL.Entities.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("GuestsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("RSVPs")
+                        .HasForeignKey("AppUserId");
 
-                    b.HasOne("DAL.Entities.RSVP", null)
-                        .WithMany()
-                        .HasForeignKey("RSVPsRSVPId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("DAL.Entities.Wedding", null)
+                        .WithMany("RSVPs")
+                        .HasForeignKey("WeddingId");
                 });
 
             modelBuilder.Entity("DAL.Entities.Wedding", b =>
@@ -329,10 +331,6 @@ namespace DAL.Migrations
                     b.HasOne("DAL.Entities.AppUser", null)
                         .WithMany("Weddings")
                         .HasForeignKey("AppUserId");
-
-                    b.HasOne("DAL.Entities.RSVP", null)
-                        .WithMany("weddings")
-                        .HasForeignKey("RSVPId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -386,13 +384,15 @@ namespace DAL.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DAL.Entities.RSVP", b =>
+            modelBuilder.Entity("DAL.Entities.Wedding", b =>
                 {
-                    b.Navigation("weddings");
+                    b.Navigation("RSVPs");
                 });
 
             modelBuilder.Entity("DAL.Entities.AppUser", b =>
                 {
+                    b.Navigation("RSVPs");
+
                     b.Navigation("Weddings");
                 });
 #pragma warning restore 612, 618

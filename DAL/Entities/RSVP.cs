@@ -6,7 +6,14 @@ namespace DAL.Entities
     {
         [Key]
         public Guid RSVPId { get; set; }
-        public List<Wedding> weddings { get; set; }
-        public List<AppUser> Guests { get; set; }
+
     }
 }
+/* 
+USER
+Many Weddings and many RSVPS 
+Wedding
+many Rsvps, One User/creator
+RSVP 
+one user, one wedding
+ */
