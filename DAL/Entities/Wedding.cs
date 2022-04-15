@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Entities
 {
-    [Authorize]
     public class Wedding
     {
         [Key]

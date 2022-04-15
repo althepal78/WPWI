@@ -2,6 +2,6 @@
 {
     public interface IDbInitializeIr
     {
-        void Initialize();
+        Task InitializeAsync();
     }
 }

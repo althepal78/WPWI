@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DAL.DbContext;
 using DAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ namespace WPWI.Controllers
             _signInManager = signInManager;
         }
 
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Dashboard()
         {
             var weddings = await _dbContext.Weddings.ToListAsync();

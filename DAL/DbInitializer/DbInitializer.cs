@@ -15,11 +15,11 @@ namespace DAL.DbInitializer
             _roleManager = roleManager;
         }
 
-        public void Initialize()
+        public async Task InitializeAsync()
         {
             if (_db.Roles.Any(r => r.Name == "User")) return;
-            _roleManager.CreateAsync(new IdentityRole("User"));
-            _roleManager.CreateAsync(new IdentityRole("Planner"));
+            await _roleManager.CreateAsync(new IdentityRole("User"));
+            await _roleManager.CreateAsync(new IdentityRole("Planner"));
         }
 
 
