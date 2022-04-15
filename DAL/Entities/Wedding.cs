@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL.Entities
 {
+    [Authorize]
     public class Wedding
     {
         [Key]
@@ -16,6 +18,10 @@ namespace DAL.Entities
         [Required, MaxLength(50), Display(Name = "Wedder Two: ")]
         public string WedderTwo { get; set; }
 
+        [Required, MaxLength(1150), Display(Name = "Wedder Two: ")]
+        public string WeddingAddress { get; set; }
+
+        [MaxLength(350)]
         public string WeddingName
         {
             get

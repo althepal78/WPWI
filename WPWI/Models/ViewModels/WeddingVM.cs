@@ -4,8 +4,7 @@ namespace WPWI.Models.ViewModels
 {
     public class WeddingVM
     {
-        [Required, Display(Name = "Wedding Date: ")]
-        public DateTime WeddingDate { get; set; }
+        
 
         [Required, MaxLength(50), Display(Name = "Wedder One: ")]
         public string WedderOne { get; set; }
@@ -13,7 +12,12 @@ namespace WPWI.Models.ViewModels
         [Required, MaxLength(50), Display(Name = "Wedder Two: ")]
         public string WedderTwo { get; set; }
 
-        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-        public DateTime UpdatedOn { get; set; } = DateTime.UtcNow;
+        [Required, Display(Name = "Wedding Date: ")]
+        public DateTime WeddingDate { get; set; }
+
+        [Required, Display(Name = "Wedding Address")]
+        public string WeddingAddress { get; set; }
+
+        public string WeddingName { get;}
     }
 }

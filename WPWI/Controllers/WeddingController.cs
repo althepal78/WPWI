@@ -1,16 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using DAL.DbContext;
+using DAL.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WPWI.Models.ViewModels;
 
 namespace WPWI.Controllers
 {
+    
     public class WeddingController : Controller
     {
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IMapper _mapper;
+        private readonly AppDbContext _dbContext;
+        private readonly SignInManager<AppUser> _signInManager;
 
 
-
-
-        public IActionResult Index()
+        public WeddingController(UserManager<AppUser> userManager,
+                                  IMapper mapper,
+                                  AppDbContext dbContext,
+                                  SignInManager<AppUser> signInManager)
         {
-            return View();
+            _userManager = userManager;
+            _mapper = mapper;
+            _dbContext = dbContext;
+            _signInManager = signInManager;
+        }
+
+        public async Task<IActionResult> Dashboard()
+        {
+            var weddings = await _dbContext.Weddings.ToListAsync();
+            List<WeddingVM> weddingsVM = _mapper.Map<List<WeddingVM>>(weddings);
+            return View(weddingsVM);
         }
     }
 }

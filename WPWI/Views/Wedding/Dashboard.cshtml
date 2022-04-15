@@ -1,0 +1,37 @@
+﻿@using WPWI.Models.ViewModels
+@model List<WeddingVM>
+
+
+
+<section>
+    <div >
+       <table class="table table-dark table-hover table-bordered border-info">
+            <thead>
+                <tr>
+                    <th>Wedding</th>
+                    <th>Date</th>
+                    <th>Guests</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var Wedding in Model)
+                {
+                    if(Model == null)
+                    {
+                        <h1>Nothing Here to show</h1>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td><a>@Wedding.WedderOne & @Wedding.WedderTwo</a></td>
+                            <td>@Wedding.WeddingDate</td>
+                            <td>NoneYet</td>
+                            <td>RSVP/Can't Go</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

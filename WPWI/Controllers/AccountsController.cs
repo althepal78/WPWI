@@ -2,7 +2,6 @@
 using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WPWI.Models.ViewModels;
 
 namespace WPWI.Controllers
@@ -21,7 +20,6 @@ namespace WPWI.Controllers
             _userManager = userManager;
             _mapper = mapper;
             _signInManager = signInManager;
-
         }
 
         public IActionResult Register()
@@ -50,7 +48,7 @@ namespace WPWI.Controllers
             var result = await _userManager.CreateAsync(newUser, user.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Dashboard", "Wedding");
             }
             else
             {
@@ -97,9 +95,7 @@ namespace WPWI.Controllers
 
             await _signInManager.SignInAsync(isUserInDb, validPassword);
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Dashboard", "Wedding");
         }
-            
-
     }
 }
