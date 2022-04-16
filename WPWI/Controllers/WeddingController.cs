@@ -53,8 +53,9 @@ namespace WPWI.Controllers
             Wedding newWedding = _mapper.Map<Wedding>(weddingVM);
             var userEmail = HttpContext.User.Identity.Name;
             AppUser user = await _userManager.FindByEmailAsync(userEmail);
-            var id = newWedding.AppUserId;
-            Console.WriteLine(id);
+            
+            
+
             if(user != null)
             {
                 var res = await _userManager.AddToRoleAsync(user, "Planner");
@@ -72,8 +73,9 @@ namespace WPWI.Controllers
             return RedirectToAction("Dashboard");
         }
 
-        public IActionResult ShowWedding()
+        public IActionResult ShowWedding(Guid WeddingId)
         {
+
 
             return View();
         }

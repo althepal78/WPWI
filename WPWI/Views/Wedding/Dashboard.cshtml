@@ -27,7 +27,9 @@
                     else
                     {
                         <tr>
-                            <td><a asp-action="ShowWedding">@Wedding.WedderOne & @Wedding.WedderTwo </a></td>
+                            <td><a asp-action="ShowWedding" 
+                                 asp-controller="Wedding" 
+                                 asp-route-id="@Wedding.WeddingId">@Wedding.WedderOne & @Wedding.WedderTwo </a></td>
                             <td>@Wedding.WeddingDate</td>
                             <td>NoneYet</td>
                             <td>RSVP/Can't Go</td>

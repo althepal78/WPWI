@@ -49,10 +49,7 @@ namespace DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AppUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("AppUserId1")
+                    b.Property<string>("AppUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -61,6 +58,9 @@ namespace DAL.Migrations
 
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("WedderOne")
                         .IsRequired()
@@ -82,7 +82,7 @@ namespace DAL.Migrations
 
                     b.HasKey("WeddingId");
 
-                    b.HasIndex("AppUserId1");
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Weddings");
                 });
@@ -337,7 +337,7 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.AppUser", "AppUser")
                         .WithMany("Weddings")
-                        .HasForeignKey("AppUserId1")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

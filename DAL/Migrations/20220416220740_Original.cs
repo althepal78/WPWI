@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class addingForeingKeyToWedding : Migration
+    public partial class Original : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -166,8 +166,8 @@ namespace DAL.Migrations
                     WedderOne = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     WedderTwo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     WeddingAddress = table.Column<string>(type: "nvarchar(1150)", maxLength: 1150, nullable: false),
-                    AppUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AppUserId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -175,8 +175,8 @@ namespace DAL.Migrations
                 {
                     table.PrimaryKey("PK_Weddings", x => x.WeddingId);
                     table.ForeignKey(
-                        name: "FK_Weddings_AspNetUsers_AppUserId1",
-                        column: x => x.AppUserId1,
+                        name: "FK_Weddings_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -255,9 +255,9 @@ namespace DAL.Migrations
                 column: "WeddingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Weddings_AppUserId1",
+                name: "IX_Weddings_AppUserId",
                 table: "Weddings",
-                column: "AppUserId1");
+                column: "AppUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
