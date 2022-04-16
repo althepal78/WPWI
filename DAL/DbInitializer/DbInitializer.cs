@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DAL.DbInitializer
 {
-    public class DbInitializer : IDbInitializeIr
+    public class DbInitializer : IDbInitializer
     {
         private readonly AppDbContext _db;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -15,14 +15,12 @@ namespace DAL.DbInitializer
             _roleManager = roleManager;
         }
 
-        public void Initialize()
+        public async Task InitializeAsync()
         {
             if (_db.Roles.Any(r => r.Name == "User")) return;
-            _roleManager.CreateAsync(new IdentityRole("User"));
-            _roleManager.CreateAsync(new IdentityRole("Planner"));
+            await _roleManager.CreateAsync(new IdentityRole("User"));
+            await _roleManager.CreateAsync(new IdentityRole("Planner"));
         }
-
-
     }
 }
 

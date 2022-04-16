@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Entities
 {
-    [Authorize]
+    
     public class Wedding
     {
         [Key]
@@ -21,8 +22,13 @@ namespace DAL.Entities
         [Required, MaxLength(1150), Display(Name = "Wedder Two: ")]
         public string WeddingAddress { get; set; }
 
+        [ForeignKey("AppUserId")]
+        public Guid AppUserId { get; set; }
+        public AppUser AppUser { get; set; }
+
         [MaxLength(350)]
-        public string WeddingName
+        [NotMapped]
+        public string? WeddingName
         {
             get
             {

@@ -5,7 +5,10 @@
 
 <section>
     <div >
-       <table class="table table-dark table-hover table-bordered border-info text-warning">
+        <a class="float-right btn  btn-outline-info" asp-action="AddWedding" asp-controller="Wedding">
+            Add Wedding
+        </a>
+       <table class="table table-dark table-hover table-bordered border-info text-info">
             <thead>
                 <tr>
                     <th>Wedding</th>
@@ -24,7 +27,7 @@
                     else
                     {
                         <tr>
-                            <td><a>@Wedding.WedderOne & @Wedding.WedderTwo</a></td>
+                            <td><a asp-action="ShowWedding">@Wedding.WedderOne & @Wedding.WedderTwo </a></td>
                             <td>@Wedding.WeddingDate</td>
                             <td>NoneYet</td>
                             <td>RSVP/Can't Go</td>

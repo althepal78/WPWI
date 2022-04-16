@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220414161810_AddedRegisterinAccountsController")]
-    partial class AddedRegisterinAccountsController
+    [Migration("20220416190328_addingForeingKeyToWedding")]
+    partial class addingForeingKeyToWedding
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,7 +51,11 @@ namespace DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("AppUserId")
+                    b.Property<Guid>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AppUserId1")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedOn")
@@ -70,12 +74,17 @@ namespace DAL.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("WeddingAddress")
+                        .IsRequired()
+                        .HasMaxLength(1150)
+                        .HasColumnType("nvarchar(1150)");
+
                     b.Property<DateTime>("WeddingDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("WeddingId");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("AppUserId1");
 
                     b.ToTable("Weddings");
                 });
@@ -328,9 +337,13 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.Wedding", b =>
                 {
-                    b.HasOne("DAL.Entities.AppUser", null)
+                    b.HasOne("DAL.Entities.AppUser", "AppUser")
                         .WithMany("Weddings")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("AppUserId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

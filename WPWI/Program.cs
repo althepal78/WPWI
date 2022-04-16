@@ -14,9 +14,17 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+
+//fix your forward to login page
+builder.Services.ConfigureApplicationCookie(opt =>
+{
+    opt.AccessDeniedPath = "/Accounts/AccessDenied";
+    opt.LoginPath = "/Accounts/Login";
+});
+
+builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-builder.Services.AddScoped<IDbInitializeIr, DbInitializer>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -31,10 +39,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+//make the dbinitializer work
+var scope = app.Services.CreateScope();
+var dbInit = scope.ServiceProvider.GetService<IDbInitializer>();
+dbInit.InitializeAsync();
 
 app.UseAuthentication();
 app.UseAuthorization();

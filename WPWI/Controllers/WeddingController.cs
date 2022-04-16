@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DAL.DbContext;
 using DAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using WPWI.Models.ViewModels;
 
 namespace WPWI.Controllers
 {
-    
+    [Authorize]
     public class WeddingController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -33,6 +34,48 @@ namespace WPWI.Controllers
             var weddings = await _dbContext.Weddings.ToListAsync();
             List<WeddingVM> weddingsVM = _mapper.Map<List<WeddingVM>>(weddings);
             return View(weddingsVM);
+        }
+
+        public IActionResult AddWedding()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddWedding(WeddingVM weddingVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(weddingVM);
+            }
+
+            Wedding newWedding = _mapper.Map<Wedding>(weddingVM);
+            var userEmail = HttpContext.User.Identity.Name;
+            AppUser user = await _userManager.FindByEmailAsync(userEmail);
+            var id = newWedding.AppUserId;
+            Console.WriteLine(id);
+            if(user != null)
+            {
+                var res = await _userManager.AddToRoleAsync(user, "Planner");
+                if (!res.Succeeded)
+                {
+                    ModelState.AddModelError(String.Empty, "Unable to complete the registration");
+                    return View(weddingVM);
+                }
+            }
+
+
+            await _dbContext.Weddings.AddAsync(newWedding);
+            await _dbContext.SaveChangesAsync();
+
+            return RedirectToAction("Dashboard");
+        }
+
+        public IActionResult ShowWedding()
+        {
+
+            return View();
         }
     }
 }

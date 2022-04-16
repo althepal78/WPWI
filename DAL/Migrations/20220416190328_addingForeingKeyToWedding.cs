@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class addingForeingKeyToWedding : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -29,8 +29,8 @@ namespace DAL.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -165,18 +165,21 @@ namespace DAL.Migrations
                     WeddingDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     WedderOne = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     WedderTwo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    WeddingAddress = table.Column<string>(type: "nvarchar(1150)", maxLength: 1150, nullable: false),
+                    AppUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AppUserId1 = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Weddings", x => x.WeddingId);
                     table.ForeignKey(
-                        name: "FK_Weddings_AspNetUsers_AppUserId",
-                        column: x => x.AppUserId,
+                        name: "FK_Weddings_AspNetUsers_AppUserId1",
+                        column: x => x.AppUserId1,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -252,9 +255,9 @@ namespace DAL.Migrations
                 column: "WeddingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Weddings_AppUserId",
+                name: "IX_Weddings_AppUserId1",
                 table: "Weddings",
-                column: "AppUserId");
+                column: "AppUserId1");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

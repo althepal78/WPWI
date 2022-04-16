@@ -1,0 +1,29 @@
+﻿@using WPWI.Models.ViewModels
+@model WeddingVM
+
+<section>
+    <div class="container">
+        <form asp-action="AddWedding" asp-controller="Wedding" method="post">
+            <div asp-validation-summary="All"></div>
+            <div class="form-control">
+                <label asp-for="@Model.WedderOne"></label>
+                <input asp-for="@Model.WedderOne" />
+            </div>
+            <div class="form-control">
+                <label asp-for="@Model.WedderTwo"></label>
+                <input asp-for="@Model.WedderTwo" />
+            </div>
+            <div class="form-control">
+                <label asp-for="@Model.WeddingDate"></label>
+                <input asp-for="@Model.WeddingDate" />
+            </div>
+            <div class="form-control">
+                <label asp-for="@Model.WeddingAddress"></label>
+                <input asp-for="@Model.WeddingAddress" />
+            </div>
+            <div class="form-control">
+                <button class="btn btn-outline-info" type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+</section>
