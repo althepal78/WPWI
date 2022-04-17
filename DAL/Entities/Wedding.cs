@@ -22,8 +22,10 @@ namespace DAL.Entities
         [Required, MaxLength(1150), Display(Name = "Wedder Two: ")]
         public string WeddingAddress { get; set; }
 
-        [ForeignKey(nameof(UserId))]
-        public Guid UserId { get; set; }
+
+        [ForeignKey("AppUserId")]
+        public string AppUserId { get; set; }
+
         public AppUser AppUser { get; set; }
 
         [MaxLength(350)]

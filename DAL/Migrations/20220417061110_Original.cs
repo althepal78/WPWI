@@ -166,7 +166,6 @@ namespace DAL.Migrations
                     WedderOne = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     WedderTwo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     WeddingAddress = table.Column<string>(type: "nvarchar(1150)", maxLength: 1150, nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: false)

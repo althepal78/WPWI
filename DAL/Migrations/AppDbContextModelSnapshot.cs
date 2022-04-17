@@ -59,9 +59,6 @@ namespace DAL.Migrations
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("WedderOne")
                         .IsRequired()
                         .HasMaxLength(50)

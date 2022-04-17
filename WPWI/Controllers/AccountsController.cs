@@ -2,6 +2,7 @@
 using DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WPWI.Models.ViewModels;
 
 namespace WPWI.Controllers
@@ -35,7 +36,7 @@ namespace WPWI.Controllers
                 return View(user);
             }
 
-            var isUserInDatabase = await  _userManager.FindByEmailAsync(user.Email);
+            var isUserInDatabase = await _userManager.FindByEmailAsync(user.Email);
             if (isUserInDatabase != null)
             {
                 ModelState.AddModelError("Email", "Email already exist bruh");
@@ -48,6 +49,21 @@ namespace WPWI.Controllers
             var result = await _userManager.CreateAsync(newUser, user.Password);
             if (result.Succeeded)
             {
+                var res = await _userManager.AddToRoleAsync(newUser, "User");
+                if (!res.Succeeded)
+                {
+                    ModelState.AddModelError(String.Empty, "Unable to complete the registration");
+                    return View(user);
+                }
+
+                var claim = new Claim("id", newUser.Id);
+                res = await _userManager.AddClaimAsync(newUser, claim);
+                if (!res.Succeeded)
+                {
+                    ModelState.AddModelError(String.Empty, "Unable to complete the registration");
+                    return View(user);
+                }
+
                 return RedirectToAction("Dashboard", "Wedding");
             }
             else
@@ -63,8 +79,8 @@ namespace WPWI.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();             
-            return RedirectToAction("Index","Home");
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Login()
@@ -80,14 +96,14 @@ namespace WPWI.Controllers
             }
             AppUser isUserInDb = await _userManager.FindByEmailAsync(user.Email);
 
-            if(isUserInDb == null)
+            if (isUserInDb == null)
             {
                 ModelState.AddModelError("Uesr", "User Doesn't exist");
                 return View(user);
             }
 
             var validPassword = await _userManager.CheckPasswordAsync(isUserInDb, user.Password);
-            if(validPassword != true)
+            if (validPassword != true)
             {
                 ModelState.AddModelError("Password", "Bad Password!!!");
                 return View(user);
@@ -99,3 +115,51 @@ namespace WPWI.Controllers
         }
     }
 }
+/*
+ [HttpPost]
+    public async Task<IActionResult> Register(AppUserVM user)
+    {
+      if (!ModelState.IsValid)
+      {
+        return View(user);
+      }
+
+      var isUserInDatabase = await _userManager.FindByEmailAsync(user.Email);
+      if (isUserInDatabase != null)
+      {
+        ModelState.AddModelError("Email", "Email already exist bruh");
+        return View(user);
+      }
+
+      var newUser = _mapper.Map<AppUser>(user);
+      newUser.UserName = user.Email;
+
+      var result = await _userManager.CreateAsync(newUser, user.Password);
+      if (result.Succeeded)
+      {
+        //add user to User role
+        var res = await _userManager.AddToRoleAsync(newUser, "User");
+        if(!res.Succeeded)
+        {
+          ModelState.AddModelError(String.Empty, "Unable to complete the registration");
+            
+        }
+        var claim = new Claim("id", newUser.Id);
+        res = await _userManager.AddClaimAsync(newUser, claim);
+        if(!res.Succeeded)
+        {
+          ModelState.AddModelError(String.Empty, "Unable to complete the registration");
+        }
+        return RedirectToAction("Dashboard", "Wedding");
+      }
+      else
+      {
+        foreach (var err in result.Errors)
+        {
+          Console.WriteLine(err.Code + " " + err.Description);
+
+        }
+        return View(user);
+      }
+    }
+ */

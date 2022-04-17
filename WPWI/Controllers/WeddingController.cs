@@ -53,17 +53,13 @@ namespace WPWI.Controllers
             Wedding newWedding = _mapper.Map<Wedding>(weddingVM);
             var userEmail = HttpContext.User.Identity.Name;
             AppUser user = await _userManager.FindByEmailAsync(userEmail);
-            
-            
 
-            if(user != null)
+            newWedding.AppUserId = user.Id;
+
+            var hasRoles = await _userManager.IsInRoleAsync(user, "Planner");
+            if (!hasRoles)
             {
-                var res = await _userManager.AddToRoleAsync(user, "Planner");
-                if (!res.Succeeded)
-                {
-                    ModelState.AddModelError(String.Empty, "Unable to complete the registration");
-                    return View(weddingVM);
-                }
+                await _userManager.AddToRoleAsync(user, "Planner");
             }
 
 
