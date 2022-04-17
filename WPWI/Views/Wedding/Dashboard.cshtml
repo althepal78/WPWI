@@ -1,7 +1,4 @@
-﻿@using WPWI.Models.ViewModels
-@model List<WeddingVM>
-
-
+﻿@model WPWI.Models.ViewModels.DashboardVM
 
 <section>
     <div >
@@ -18,7 +15,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var Wedding in Model)
+                @foreach (var wedding in Model.WeddingsList)
                 {
                     if(Model == null)
                     {
@@ -29,10 +26,12 @@
                         <tr>
                             <td><a asp-action="ShowWedding" 
                                  asp-controller="Wedding" 
-                                 asp-route-id="@Wedding.WeddingId">@Wedding.WedderOne & @Wedding.WedderTwo </a></td>
-                            <td>@Wedding.WeddingDate</td>
+                                 asp-route-id="@wedding.WeddingId">@wedding.WedderOne & @wedding.WedderTwo </a></td>
+                            <td>@wedding.WeddingDate</td>
                             <td>NoneYet</td>
-                            <td>RSVP/Can't Go</td>
+                            @if(User.IsInRole("Planner") && User.FindFirst("id").Value == wedding.AppUser.Id) {
+                              <td>RSVP/Can't Go</td>
+                            }
                         </tr>
                     }
                 }

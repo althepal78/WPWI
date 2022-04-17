@@ -31,9 +31,13 @@ namespace WPWI.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
-            var weddings = await _dbContext.Weddings.ToListAsync();
+            var weddings = await _dbContext.Weddings.Include("AppUser").ToListAsync();
             List<WeddingVM> weddingsVM = _mapper.Map<List<WeddingVM>>(weddings);
-            return View(weddingsVM);
+            DashboardVM vm = new DashboardVM
+            {
+              WeddingsList = weddingsVM
+            };
+            return View(vm);
         }
 
         public IActionResult AddWedding()
