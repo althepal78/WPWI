@@ -1,14 +1,11 @@
-﻿@using WPWI.Models.ViewModels
-@model List<WeddingVM>
-
-
+﻿@model WPWI.Models.ViewModels.DashboardVM
 
 <section>
-    <div >
+    <div>
         <a class="float-right btn  btn-outline-info" asp-action="AddWedding" asp-controller="Wedding">
             Add Wedding
         </a>
-       <table class="table table-dark table-hover table-bordered border-info text-info">
+        <table class="table table-dark table-hover table-bordered border-info text-info">
             <thead>
                 <tr>
                     <th>Wedding</th>
@@ -18,24 +15,51 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var Wedding in Model)
+                @foreach (var wedding in Model.WeddingsList)
                 {
-                    if(Model == null)
+                    if (wedding == null)
                     {
-                        <h1>Nothing Here to show</h1>
+                        <tr>
+                            <td>Nothing here to see!</td>
+                            <td>Nothing here to see!</td>
+                            <td>Nothing here to see!</td>
+                            <td>Nothing here to see!</td>
+                        </tr>
                     }
                     else
                     {
                         <tr>
-                            <td><a asp-action="ShowWedding" 
-                                 asp-controller="Wedding" 
-                                 asp-route-id="@Wedding.WeddingId">@Wedding.WedderOne & @Wedding.WedderTwo </a></td>
-                            <td>@Wedding.WeddingDate</td>
-                            <td>NoneYet</td>
-                            <td>RSVP/Can't Go</td>
+                            <td>
+                                <a asp-action="ShowWedding"
+                           asp-controller="Wedding"
+                           asp-route-id="@wedding.WeddingId">
+                                    @wedding.WedderOne & @wedding.WedderTwo
+                                </a>
+                            </td>
+
+                            <td>@wedding.WeddingDate</td>
+                            <td>
+                                @if (@wedding.RSVP == null)
+                                {
+                                    <p> No Body love you yet!</p>
+                                }
+                                else
+                                {
+                                    @wedding.RSVP.Count
+                                }
+                            </td>
+                            @if (User.IsInRole("Planner") && User.Identity.Name == wedding.AppUser.Email)
+                            {
+                                <td> <a asp-action="Delete" asp-controller="Wedding" asp-route-id="@wedding.WeddingId">Delete</a> </td>
+                            }
+                            else
+                            {
+                                <td>rsvp</td>
+                            }
                         </tr>
                     }
                 }
+
             </tbody>
         </table>
     </div>

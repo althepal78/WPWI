@@ -31,9 +31,15 @@ namespace WPWI.Controllers
 
         public async Task<IActionResult> Dashboard()
         {
-            var weddings = await _dbContext.Weddings.ToListAsync();
+            var weddings = await _dbContext.Weddings.Include(a => a.AppUser).Include(r => r.RSVPs).ToListAsync();
+
             List<WeddingVM> weddingsVM = _mapper.Map<List<WeddingVM>>(weddings);
-            return View(weddingsVM);
+            DashboardVM vm = new DashboardVM
+            {
+                WeddingsList = weddingsVM
+            };
+
+            return View(vm);
         }
 
         public IActionResult AddWedding()
@@ -55,6 +61,7 @@ namespace WPWI.Controllers
             AppUser user = await _userManager.FindByEmailAsync(userEmail);
 
             newWedding.AppUserId = user.Id;
+            newWedding.AppUser = user;
 
             var hasRoles = await _userManager.IsInRoleAsync(user, "Planner");
             if (!hasRoles)
@@ -74,6 +81,24 @@ namespace WPWI.Controllers
 
 
             return View();
+        }
+
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var DeletThisWedding = await _dbContext.Weddings
+                                        .Include(r => r.RSVPs).
+                                        FirstOrDefaultAsync(x => x.WeddingId == id);
+            if (DeletThisWedding == null)
+            {
+                return View();
+            }
+            else
+            {
+                _dbContext.Weddings.Remove(DeletThisWedding);
+                _dbContext.SaveChanges();
+            }
+
+            return RedirectToAction("Dashboard");
         }
     }
 }

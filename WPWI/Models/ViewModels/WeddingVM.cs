@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DAL.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace WPWI.Models.ViewModels
 {
@@ -19,5 +20,9 @@ namespace WPWI.Models.ViewModels
         public string WeddingAddress { get; set; }
               
         public string? WeddingName { get; }
+
+        public AppUser? AppUser { get; set; } 
+
+        public List<RSVP>? RSVP { get; set; }
     }
 }
