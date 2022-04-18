@@ -4,6 +4,7 @@ using DAL.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220418143311_AddedWeddingAndAppUserToRSVP")]
+    partial class AddedWeddingAndAppUserToRSVP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +31,7 @@ namespace DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid?>("WeddingID")
@@ -323,7 +326,9 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Entities.AppUser", "appUser")
                         .WithMany("RSVPs")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DAL.Entities.Wedding", "wedding")
                         .WithMany("RSVPs")

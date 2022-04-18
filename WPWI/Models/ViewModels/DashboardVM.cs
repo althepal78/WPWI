@@ -2,6 +2,6 @@
 {
     public class DashboardVM
     {
-        public List<WeddingVM> WeddingsList { get; set; }
+        public List<WeddingVM>? WeddingsList { get; set; }
     }
 }

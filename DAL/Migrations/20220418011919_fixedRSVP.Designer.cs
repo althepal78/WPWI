@@ -4,6 +4,7 @@ using DAL.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220418011919_fixedRSVP")]
+    partial class fixedRSVP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,6 +31,7 @@ namespace DAL.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid?>("WeddingID")
@@ -321,17 +324,15 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Entities.RSVP", b =>
                 {
-                    b.HasOne("DAL.Entities.AppUser", "appUser")
+                    b.HasOne("DAL.Entities.AppUser", null)
                         .WithMany("RSVPs")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("DAL.Entities.Wedding", "wedding")
+                    b.HasOne("DAL.Entities.Wedding", null)
                         .WithMany("RSVPs")
                         .HasForeignKey("WeddingID");
-
-                    b.Navigation("appUser");
-
-                    b.Navigation("wedding");
                 });
 
             modelBuilder.Entity("DAL.Entities.Wedding", b =>

@@ -48,18 +48,35 @@
                                     @wedding.RSVP.Count
                                 }
                             </td>
-                            @if (User.IsInRole("Planner") && User.Identity.Name == wedding.AppUser.Email)
+                            @if (User.IsInRole("Planner") && User.FindFirst("id").Value == wedding.AppUser.Id)
                             {
                                 <td> <a asp-action="Delete" asp-controller="Wedding" asp-route-id="@wedding.WeddingId">Delete</a> </td>
                             }
                             else
                             {
-                                <td>rsvp</td>
+                                if (wedding.RSVP != null)
+                                {
+                                    if (User.IsInRole("User") && wedding.RSVP.Any(u => u.AppUserId == User.FindFirst("id").Value ))
+                                    {
+                                        <td><a asp-action="CancelRSVP">Cancel RSVP</a> @wedding.RSVP.Count </td>                                      
+                                    }
+                                }
+                                else
+                                {
+                                    <td>
+                                        <a asp-action="RSVP"
+                                           asp-route-id="@wedding.WeddingId">
+                                            RSVP
+                                        </a>
+                                         @Model.WeddingsList.Count
+                                    </td>
+                                }
+
                             }
+
                         </tr>
                     }
                 }
-
             </tbody>
         </table>
     </div>

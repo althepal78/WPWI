@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DAL.Entities
 {
@@ -7,13 +8,15 @@ namespace DAL.Entities
         [Key]
         public Guid RSVPId { get; set; }
 
+        [ForeignKey("WeddingId")]
+        public Guid? WeddingID { get; set; }
+
+        [ForeignKey("AppUserId")]
+        public string? AppUserId { get; set; }
+
+        public Wedding? wedding { get; set; }
+
+        public AppUser? appUser { get; set; }
+
     }
 }
-/* 
-USER
-Many Weddings and many RSVPS 
-Wedding
-many Rsvps, One User/creator
-RSVP 
-one user, one wedding
- */

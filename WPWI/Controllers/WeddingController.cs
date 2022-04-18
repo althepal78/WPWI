@@ -29,8 +29,15 @@ namespace WPWI.Controllers
             _signInManager = signInManager;
         }
 
+        private async Task<AppUser> GetUserConnected()
+        {
+            var userConnected = HttpContext.User.Identity.Name;
+            return await _userManager.FindByEmailAsync(userConnected);
+        }
+
         public async Task<IActionResult> Dashboard()
         {
+
             var weddings = await _dbContext.Weddings.Include(a => a.AppUser).Include(r => r.RSVPs).ToListAsync();
 
             List<WeddingVM> weddingsVM = _mapper.Map<List<WeddingVM>>(weddings);
@@ -57,8 +64,8 @@ namespace WPWI.Controllers
             }
 
             Wedding newWedding = _mapper.Map<Wedding>(weddingVM);
-            var userEmail = HttpContext.User.Identity.Name;
-            AppUser user = await _userManager.FindByEmailAsync(userEmail);
+
+            AppUser user = await GetUserConnected();
 
             newWedding.AppUserId = user.Id;
             newWedding.AppUser = user;
@@ -85,20 +92,52 @@ namespace WPWI.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            var DeletThisWedding = await _dbContext.Weddings
-                                        .Include(r => r.RSVPs).
-                                        FirstOrDefaultAsync(x => x.WeddingId == id);
-            if (DeletThisWedding == null)
+            var DeleteThisWedding = await _dbContext.Weddings
+                                          .Include(r => r.RSVPs)
+                                          .Include(au => au.AppUser)
+                                          .FirstOrDefaultAsync(x => x.WeddingId == id);
+            if (DeleteThisWedding == null)
             {
                 return View();
             }
             else
             {
-                _dbContext.Weddings.Remove(DeletThisWedding);
-                _dbContext.SaveChanges();
+                if (User.IsInRole("Planner") && User.FindFirst("id").Value == DeleteThisWedding.AppUser.Id)
+                {
+                    _dbContext.Weddings.Remove(DeleteThisWedding);
+                    _dbContext.SaveChanges();
+                    return RedirectToAction("Dashboard");
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Dashboard));
+                }
             }
 
-            return RedirectToAction("Dashboard");
+
+        }
+
+        public async Task<IActionResult> RSVP(Guid id)
+        {
+
+            AppUser UserConnected = await GetUserConnected();
+            Console.WriteLine(UserConnected.Id + "**********************************************");
+            if (User.IsInRole("User"))
+            {
+                RSVP Attending = new RSVP()
+                {
+                    WeddingID = id,
+                    AppUserId = UserConnected.Id,
+                };
+                await _dbContext.RSVPs.AddAsync(Attending);
+                await _dbContext.SaveChangesAsync();
+                return RedirectToAction("Dashboard");
+            }
+            else
+            {
+                return RedirectToAction("Logout", "Accounts");
+            }
+
         }
     }
 }
