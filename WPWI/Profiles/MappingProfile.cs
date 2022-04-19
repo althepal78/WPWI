@@ -8,7 +8,7 @@ namespace WPWI.Profiles
     {
         public MappingProfile()
         {
-            CreateMap<Wedding, WeddingVM>().ReverseMap();
+            CreateMap<Wedding, WeddingVM>().ForMember(x => x.RSVP, x => x.MapFrom(src => src.RSVPs)).ReverseMap();
             CreateMap<AppUser, AppUserVM>().ReverseMap();
         }
     }

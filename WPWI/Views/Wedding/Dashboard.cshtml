@@ -54,7 +54,7 @@
                             }
                             else
                             {
-                                if (wedding.RSVP != null)
+                                if (wedding.RSVP.Count > 0)
                                 {
                                     if (User.IsInRole("User") && wedding.RSVP.Any(u => u.AppUserId == User.FindFirst("id").Value ))
                                     {
@@ -63,6 +63,7 @@
                                 }
                                 else
                                 {
+                                  @wedding.WedderOne
                                     <td>
                                         <a asp-action="RSVP"
                                            asp-route-id="@wedding.WeddingId">
